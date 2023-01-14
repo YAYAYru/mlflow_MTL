@@ -2,6 +2,8 @@ import tensorflow as tf
 import time
 import numpy as np
 import mlflow
+import random
+import os
 
 PATH_MODEL = "../models/model2.h5"
 
@@ -10,6 +12,23 @@ PATH_NPY_X_TRAIN = PATH_FOLDER + "x_train.npy"
 PATH_NPY_X_TEST = PATH_FOLDER + "x_test.npy"
 PATH_NPY_Y_TRAIN = PATH_FOLDER + "y_train_2.npy"
 PATH_NPY_Y_TEST = PATH_FOLDER + "y_test_2.npy"
+
+# https://stackoverflow.com/questions/36288235/how-to-get-stable-results-with-tensorflow-setting-random-seed
+SEED = 0
+def set_seeds(seed=SEED):
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    random.seed(seed)
+    tf.random.set_seed(seed)
+    np.random.seed(seed)
+def set_global_determinism(seed=SEED):
+    set_seeds(seed=seed)
+    os.environ['TF_DETERMINISTIC_OPS'] = '1'
+    os.environ['TF_CUDNN_DETERMINISTIC'] = '1'    
+    tf.config.threading.set_inter_op_parallelism_threads(1)
+    tf.config.threading.set_intra_op_parallelism_threads(1)
+# Call the above function with seed value
+set_global_determinism(seed=SEED)
+
 
 experiment = mlflow.set_experiment("model2")
 
@@ -31,8 +50,6 @@ with mlflow.start_run():
     print("x_test.shape", x_test.shape)
     print("y_train.shape", y_train.shape)
     print("y_test.shape", y_test.shape)
-
-    # BUILD MODEL
 
     def create_task_learning_model():
 
@@ -56,16 +73,12 @@ with mlflow.start_run():
         return model
 
 
-
     def compile_task_model(model):
         model.compile(optimizer='adam',
                     loss='binary_crossentropy',
                     metrics=['accuracy'])
-            
         return model
 
-
-    # FIT BATCH OF MODELS
 
     def fit_batch():
 
@@ -88,4 +101,8 @@ with mlflow.start_run():
     new_model = tf.keras.models.load_model(PATH_MODEL)
     new_model.summary()
 
-    print('Task2 evaluate: ', trained_model.evaluate(x_test, y_test))
+    e = trained_model.evaluate(x_test, y_test)
+    mlflow.log_metric("test_loss", e[0])
+    print('Task2 evaluate test loss: ', e[0])
+    mlflow.log_metric("test_acc", e[1])
+    print('Task2 evaluate test acc: ', e[1])

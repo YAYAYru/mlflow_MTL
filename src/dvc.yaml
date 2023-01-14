@@ -1,0 +1,48 @@
+stages:
+  load_data:
+    cmd: python3 load_data.py
+    deps:
+      - load_data.py
+    outs:
+      - ../data/raw/x_train.npy
+      - ../data/raw/x_test.npy
+      - ../data/raw/y_train.npy
+      - ../data/raw/y_test.npy
+
+  preprocessing:
+    cmd: python3 preprocessing.py
+    deps:
+      - preprocessing.py
+      - ../data/raw/x_train.npy
+      - ../data/raw/x_test.npy
+      - ../data/raw/y_train.npy
+      - ../data/raw/y_test.npy
+    outs:
+      - ../data/processed/x_train.npy
+      - ../data/processed/x_test.npy
+      - ../data/processed/y_train_1.npy
+      - ../data/processed/y_test_1.npy
+      - ../data/processed/y_train_2.npy
+      - ../data/processed/y_test_2.npy
+
+  model1:
+    cmd: python3 model1.py
+    deps:
+    - model1.py
+    - ../data/processed/x_train.npy
+    - ../data/processed/x_test.npy
+    - ../data/processed/y_train_1.npy
+    - ../data/processed/y_test_1.npy
+    outs:
+    - "../models/model1.h5"
+
+  model2:
+    cmd: python3 model2.py
+    deps:
+    - model2.py
+    - ../data/processed/x_train.npy
+    - ../data/processed/x_test.npy
+    - ../data/processed/y_train_2.npy
+    - ../data/processed/y_test_2.npy
+    outs:
+    - "../models/model2.h5"

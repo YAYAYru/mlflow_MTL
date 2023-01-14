@@ -14,3 +14,4 @@ ps -fA | grep mlflow
 kill -9 1005473
 ```
 
+- https://towardsdatascience.com/multi-task-learning-for-computer-vision-classification-with-keras-36c52e6243d2

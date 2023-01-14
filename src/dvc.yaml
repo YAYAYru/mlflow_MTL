@@ -49,3 +49,6 @@ stages:
 
   main_evaluate:
     cmd: python3 main_evaluate.py
+    deps:
+    - "../models/model1.h5"
+    - "../models/model2.h5"

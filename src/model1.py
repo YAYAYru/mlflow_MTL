@@ -106,3 +106,9 @@ with mlflow.start_run():
     print('Task1 evaluate test loss: ', e[0])
     mlflow.log_metric("test_acc", e[1])
     print('Task1 evaluate test acc: ', e[1])
+
+    model_info = mlflow.tensorflow.log_model(
+        model=trained_model, 
+        artifact_path="model1",
+        registered_model_name="model1",
+        )

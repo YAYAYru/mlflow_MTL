@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import make_pipeline
-from sklearn.metrics import mean_absolute_error, mean_squared_error
+from sklearn.metrics import mean_absolute_error, mean_squared_error, accuracy_score
 
 import joblib as jb
 import json
@@ -14,7 +14,8 @@ from mlflow.models.signature import infer_signature
 
 NUM_CLASSES = 3
 NUM_FEATURES = 2
-RANDOM_SEED = 42
+RANDOM_SEED = 0
+
 
 mlflow.set_experiment("model2")
 with mlflow.start_run():
@@ -38,18 +39,19 @@ with mlflow.start_run():
     clf3 = make_pipeline(StandardScaler(), clf3)
     clf3.fit(X_train3, y_train3)
 
-    ss = StandardScaler()
-
-    X_test3_trans = ss.fit_transform(X_test3)
-    X_pred3 = clf3.predict(X_test3_trans)
+    # ss = StandardScaler()
+    # X_test3_trans = ss.fit_transform(X_test3)
+    X_test3_trans = X_test3
+    y_pred3 = clf3.predict(X_test3_trans)
 
 
 
     score = dict(
-        mae=mean_absolute_error(y_test3, X_pred3),
-        rmse=mean_squared_error(y_test3, X_pred3)
+        mae=mean_absolute_error(y_test3, y_pred3),
+        rmse=mean_squared_error(y_test3, y_pred3),
+        acc=accuracy_score(y_test3, y_pred3)
     )
-
+    print("score", score)
     path_model = "model2.clf"
     # jb.dump(clf3, path_model)
 

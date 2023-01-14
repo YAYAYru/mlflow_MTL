@@ -46,3 +46,6 @@ stages:
     - ../data/processed/y_test_2.npy
     outs:
     - "../models/model2.h5"
+
+  main_evaluate:
+    cmd: python3 main_evaluate.py

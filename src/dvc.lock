@@ -100,3 +100,5 @@ stages:
     - path: ../models/model2.h5
       md5: b228f7425837926ba4f80737089e6bff
       size: 111017424
+  main_evaluate:
+    cmd: python3 main_evaluate.py

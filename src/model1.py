@@ -1,81 +1,80 @@
-from sklearn.datasets import make_blobs
-from sklearn.model_selection import train_test_split
+import tensorflow as tf
+import time
+import numpy as np
 
-from sklearn.preprocessing import StandardScaler
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.pipeline import make_pipeline
-from sklearn.metrics import mean_absolute_error, mean_squared_error, accuracy_score
+PATH_MODEL = "../models/model1.h5"
 
-import joblib as jb
-import json
+PATH_FOLDER = "../data/processed/"
+PATH_NPY_X_TRAIN = PATH_FOLDER + "x_train.npy"
+PATH_NPY_X_TEST = PATH_FOLDER + "x_test.npy"
+PATH_NPY_Y_TRAIN = PATH_FOLDER + "y_train_1.npy"
+PATH_NPY_Y_TEST = PATH_FOLDER + "y_test_1.npy"
 
-import mlflow
-from mlflow.models.signature import infer_signature
-from mlflow.pyfunc import PythonModel
+x_train = np.load(PATH_NPY_X_TRAIN)
+x_test = np.load(PATH_NPY_X_TEST)
+y_train = np.load(PATH_NPY_Y_TRAIN)
+y_test = np.load(PATH_NPY_Y_TEST)
 
-NUM_CLASSES = 3
-NUM_FEATURES = 2
-RANDOM_SEED = 0
+print("x_train.shape", x_train.shape)
+print("x_test.shape", x_test.shape)
+print("y_train.shape", y_train.shape)
+print("y_test.shape", y_test.shape)
 
+# BUILD MODEL
 
-class CustomModel1(mlflow.pyfunc.PythonModel):
-    def __init__(self, clf):
-        self.clf = clf
-        X, y = make_blobs(n_samples=100,
-            n_features=NUM_FEATURES, 
-            centers=NUM_CLASSES, 
-            cluster_std=1.5,
-            random_state=RANDOM_SEED
-        )
-        self.ss = StandardScaler()
-        self.ss.fit(X)
+def create_task_learning_model():
 
+    inputs = tf.keras.layers.Input(shape=(32, 32, 3), name='input')
 
-    def predict(self, context, model_input):
-        # pre_data = self.preprocessing(model_input)
-        return self.clf.predict(model_input)
+    main_branch = tf.keras.layers.Conv2D(filters=32, kernel_size=(3, 3), strides=1)(inputs)
+    main_branch = tf.keras.layers.MaxPooling2D(pool_size=(2, 2), strides=2)(main_branch)
+    main_branch = tf.keras.layers.Conv2D(filters=64, kernel_size=(3, 3), strides=1)(main_branch)
+    main_branch = tf.keras.layers.MaxPooling2D(pool_size=(2, 2), strides=2)(main_branch)
+    main_branch = tf.keras.layers.Conv2D(filters=128, kernel_size=(3, 3), strides=1)(main_branch)
+    main_branch = tf.keras.layers.Flatten()(main_branch)
+    main_branch = tf.keras.layers.Dense(3512, activation='relu')(main_branch)
 
+    task_1_branch = tf.keras.layers.Dense(1024, activation='relu')(main_branch)
+    task_1_branch = tf.keras.layers.Dense(512, activation='relu')(task_1_branch)
+    task_1_branch = tf.keras.layers.Dense(256, activation='relu')(task_1_branch)
+    task_1_branch = tf.keras.layers.Dense(128, activation='relu')(task_1_branch)
+    task_1_branch = tf.keras.layers.Dense(8, activation='softmax')(task_1_branch)
 
-    def preprocessing(self, model_input):
-        return self.ss.transform(model_input)
-
-
-mlflow.set_experiment("model1")
-with mlflow.start_run():
-    mlflow.sklearn.autolog()
-    X_blob2, y_blob2 = make_blobs(n_samples=100,
-        n_features=NUM_FEATURES, 
-        centers=NUM_CLASSES, 
-        cluster_std=1.5,
-        random_state=RANDOM_SEED
-    )
+    model = tf.keras.Model(inputs = inputs, outputs = [task_1_branch])
+    model.summary()
+    return model
 
 
-    X, y = X_blob2, y_blob2
-    X_train2, X_test2, y_train2, y_test2 = train_test_split(
-        X, y, test_size=0.4, random_state=42
-    )
 
-    clf2 = KNeighborsClassifier(3)
-    clf2 = make_pipeline(StandardScaler(), clf2)
-    clf2.fit(X_train2, y_train2)
+def compile_task_model(model):
+        
+    model.compile(optimizer='adam',
+                  loss='categorical_crossentropy',
+                  metrics=['accuracy'])
+    return model
 
-    path_custom_model = "model1"
-    cm = CustomModel1(clf2)
 
-    signature = infer_signature(X_test2, clf2.predict(X_test2))
-    model_info = mlflow.pyfunc.log_model(
-        python_model=cm,
-        artifact_path=path_custom_model,
-        registered_model_name="Pre_KNeighbors_model1",
-        signature=signature
-    )
+# FIT BATCH OF MODELS
 
-    loaded_model = mlflow.pyfunc.load_model(model_uri=model_info.model_uri)
-    y_pred2 = loaded_model.predict(X_test2)
-    score = dict(
-        mae=mean_absolute_error(y_test2, y_pred2),
-        rmse=mean_squared_error(y_test2, y_pred2),
-        acc=accuracy_score(y_test2, y_pred2)
-    )
-    print("score", score)
+def fit_batch():
+
+    print('Starting training on batch of models for multitasks ', '\n\n')
+    
+    model = create_task_learning_model()
+    model = compile_task_model(model)
+
+    start = time.time()
+    model2_history = model.fit(x_train, y_train,
+                        epochs=15, batch_size=128, verbose=0)
+
+    print(f'Training time: {time.time() - start}\n')
+    return model2_history, model
+        
+
+training_history, trained_model = fit_batch()
+trained_model.save(PATH_MODEL)
+
+new_model = tf.keras.models.load_model(PATH_MODEL)
+new_model.summary()
+
+print('Task1 evaluate: ', trained_model.evaluate(x_test, y_test))

@@ -38,7 +38,7 @@ print("Artifact Location: {}".format(experiment.artifact_location))
 print("Tags: {}".format(experiment.tags))
 print("Lifecycle_stage: {}".format(experiment.lifecycle_stage))
 
-with mlflow.start_run():
+with mlflow.start_run() as run:
     mlflow.tensorflow.autolog()
 
     x_train = np.load(PATH_NPY_X_TRAIN)
@@ -107,8 +107,12 @@ with mlflow.start_run():
     mlflow.log_metric("test_acc", e[1])
     print('Task1 evaluate test acc: ', e[1])
 
-    model_info = mlflow.tensorflow.log_model(
-        model=trained_model, 
-        artifact_path="model1",
-        registered_model_name="model1",
-        )
+    # model_info = mlflow.tensorflow.log_model(
+    #     model=trained_model, 
+    #     artifact_path="model1",
+    #     registered_model_name="model1",
+    #     )
+    model_uri = "runs:/{}/model1".format(run.info.run_id)
+    mv = mlflow.register_model(model_uri, "model1")
+    print("Name: {}".format(mv.name))
+    print("Version: {}".format(mv.version))

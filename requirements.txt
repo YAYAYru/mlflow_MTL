@@ -3,3 +3,5 @@ sklearn
 matplotlib
 protobuf==3.20
 numpy==1.23.5
+dvc
+tensorflow

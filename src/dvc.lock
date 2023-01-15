@@ -1,0 +1,114 @@
+schema: '2.0'
+stages:
+  model1:
+    cmd: python3 model1.py
+    deps:
+    - path: ../data/processed/x_test.npy
+      md5: c76ba3fda5b7b65b1133e5488f4f5347
+      size: 24576128
+    - path: ../data/processed/x_train.npy
+      md5: 4f61c86dd8532cec9c8c5c3cfcf2784d
+      size: 122880128
+    - path: ../data/processed/y_test_1.npy
+      md5: 199bd05bff808be474bd5d8efa7506b3
+      size: 256128
+    - path: ../data/processed/y_train_1.npy
+      md5: 98a4fb5d72d3fe1332cfa20f5c2a7165
+      size: 1280128
+    - path: model1.py
+      md5: 821ee938e668da86bc6976fffd7dac9a
+      size: 4346
+    outs:
+    - path: ../models/model1.h5
+      md5: 08e4189d902f3c86e1ba0031cf457c45
+      size: 139001176
+  load_data:
+    cmd: python3 load_data.py
+    deps:
+    - path: load_data.py
+      md5: 0667e7a2f2aef59383d14f6ad0dc65c8
+      size: 2013
+    outs:
+    - path: ../data/raw/x_test.npy
+      md5: 05852affbaf8e2140acaa95bfd8c602b
+      size: 30720128
+    - path: ../data/raw/x_train.npy
+      md5: 794a4871ad6e5afe4edbe5c0c048b5a7
+      size: 153600128
+    - path: ../data/raw/y_test.npy
+      md5: 4846404154c8dd074a57c66c850dcdd1
+      size: 10128
+    - path: ../data/raw/y_train.npy
+      md5: f8ebf94fefabced378e2bab00dc77491
+      size: 50128
+  preprocessing:
+    cmd: python3 preprocessing.py
+    deps:
+    - path: ../data/raw/x_test.npy
+      md5: 05852affbaf8e2140acaa95bfd8c602b
+      size: 30720128
+    - path: ../data/raw/x_train.npy
+      md5: 794a4871ad6e5afe4edbe5c0c048b5a7
+      size: 153600128
+    - path: ../data/raw/y_test.npy
+      md5: 4846404154c8dd074a57c66c850dcdd1
+      size: 10128
+    - path: ../data/raw/y_train.npy
+      md5: f8ebf94fefabced378e2bab00dc77491
+      size: 50128
+    - path: preprocessing.py
+      md5: f2661956ba49afb6e438a044a66f3f52
+      size: 5916
+    outs:
+    - path: ../data/processed/x_test.npy
+      md5: c76ba3fda5b7b65b1133e5488f4f5347
+      size: 24576128
+    - path: ../data/processed/x_train.npy
+      md5: 4f61c86dd8532cec9c8c5c3cfcf2784d
+      size: 122880128
+    - path: ../data/processed/y_test_1.npy
+      md5: 199bd05bff808be474bd5d8efa7506b3
+      size: 256128
+    - path: ../data/processed/y_test_2.npy
+      md5: 1e98b34c317ba377fd2c5c5efe75b716
+      size: 64128
+    - path: ../data/processed/y_train_1.npy
+      md5: 98a4fb5d72d3fe1332cfa20f5c2a7165
+      size: 1280128
+    - path: ../data/processed/y_train_2.npy
+      md5: bb3e2f730e9b0bef1c26c580d4adc005
+      size: 320128
+  model2:
+    cmd: python3 model2.py
+    deps:
+    - path: ../data/processed/x_test.npy
+      md5: c76ba3fda5b7b65b1133e5488f4f5347
+      size: 24576128
+    - path: ../data/processed/x_train.npy
+      md5: 4f61c86dd8532cec9c8c5c3cfcf2784d
+      size: 122880128
+    - path: ../data/processed/y_test_2.npy
+      md5: 1e98b34c317ba377fd2c5c5efe75b716
+      size: 64128
+    - path: ../data/processed/y_train_2.npy
+      md5: bb3e2f730e9b0bef1c26c580d4adc005
+      size: 320128
+    - path: model2.py
+      md5: 735b0f8f121068f5fe6402397259423b
+      size: 4268
+    outs:
+    - path: ../models/model2.h5
+      md5: 605c979f9594e2d428d28fc941ab7a8e
+      size: 111017424
+  main_evaluate:
+    cmd: python3 main_evaluate.py
+    deps:
+    - path: ../models/model1.h5
+      md5: 08e4189d902f3c86e1ba0031cf457c45
+      size: 139001176
+    - path: ../models/model2.h5
+      md5: 605c979f9594e2d428d28fc941ab7a8e
+      size: 111017424
+    - path: main_evaluate.py
+      md5: f6d2a55f03d7bf57050fcf25646a2da1
+      size: 1083

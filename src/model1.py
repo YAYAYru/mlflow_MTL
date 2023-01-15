@@ -51,9 +51,9 @@ with mlflow.start_run() as run:
     print("y_train.shape", y_train.shape)
     print("y_test.shape", y_test.shape)
 
-    def create_task_learning_model():
+    def create_task_learning_model(x_train_shape, y_train_shape):
 
-        inputs = tf.keras.layers.Input(shape=(32, 32, 3), name='input')
+        inputs = tf.keras.layers.Input(shape=(x_train_shape[1], x_train_shape[2], x_train_shape[3]), name='input')
 
         main_branch = tf.keras.layers.Conv2D(filters=32, kernel_size=(3, 3), strides=1)(inputs)
         main_branch = tf.keras.layers.MaxPooling2D(pool_size=(2, 2), strides=2)(main_branch)
@@ -67,7 +67,7 @@ with mlflow.start_run() as run:
         task_1_branch = tf.keras.layers.Dense(512, activation='relu')(task_1_branch)
         task_1_branch = tf.keras.layers.Dense(256, activation='relu')(task_1_branch)
         task_1_branch = tf.keras.layers.Dense(128, activation='relu')(task_1_branch)
-        task_1_branch = tf.keras.layers.Dense(8, activation='softmax')(task_1_branch)
+        task_1_branch = tf.keras.layers.Dense( y_train_shape[1], activation='softmax')(task_1_branch)
 
         model = tf.keras.Model(inputs = inputs, outputs = [task_1_branch])
         model.summary()
@@ -84,7 +84,7 @@ with mlflow.start_run() as run:
     def fit_batch():
         print('Starting training on batch of models for multitasks ', '\n\n')
         
-        model = create_task_learning_model()
+        model = create_task_learning_model(x_train.shape, y_train.shape)
         model = compile_task_model(model)
 
         start = time.time()

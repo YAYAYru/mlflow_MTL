@@ -60,49 +60,10 @@ def generate_binary_labels(y_train, y_test, animal_classes):
 
 def preprocess_data_cifar10(x_train, y_train_1, x_test, y_test_1):
     
-    new_x_train = list()
-    new_y_train = list()
-    new_x_test = list()
-    new_y_test = list()
     airplane_count, automobile_count, bird_count, cat_count, deer_count, dog_count, frog_count, horse_count, ship_count, truck_count = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     
-    
-    # First, samples of two classes of animals (deer and horse) are erased from data. This is done because the second task to 
-    # be performed is classifying between animals and vehicles. This way, the dataset will be balanced for both tasks
-    x_train, x_test, y_train_1, y_test_1 = erase_classes([4, 7], x_train, x_test, y_train_1, y_test_1)
-    
-    # Make all labels go from 0 to 7 (right now the unique values of y are [0 1 2 3 5 6 8 9], but we want [0 1 2 3 4 5 6 7])
-    new_y_train_1 = list()
-    for train_label in y_train_1:
-        if train_label == 5:
-            new_y_train_1.append(4)
-        elif train_label == 6:
-            new_y_train_1.append(5)
-        elif train_label == 8:
-            new_y_train_1.append(6)
-        elif train_label == 9:
-            new_y_train_1.append(7)
-        else:
-            new_y_train_1.append(int(train_label))
-            
-    new_y_test_1 = list()
-    for test_label in y_test_1:
-        if test_label == 5:
-            new_y_test_1.append(4)
-        elif test_label == 6:
-            new_y_test_1.append(5)
-        elif test_label == 8:
-            new_y_test_1.append(6)
-        elif test_label == 9:
-            new_y_test_1.append(7)
-        else:
-            new_y_test_1.append(int(test_label))
-    
-    y_train_1 = np.array(new_y_train_1)
-    y_test_1 = np.array(new_y_test_1)   
-    
     # 0 = animal, 1 = vehicle
-    y_train_2, y_test_2 = generate_binary_labels(y_train_1, y_test_1, [2, 3, 4, 5])    
+    y_train_2, y_test_2 = generate_binary_labels(y_train_1, y_test_1, [2, 3, 4, 5, 6, 7])    
     
     # Print amount of instances of each class
     for label in y_train_1:
@@ -115,24 +76,30 @@ def preprocess_data_cifar10(x_train, y_train_1, x_test, y_test_1):
         elif label == 3:
             cat_count += 1
         elif label == 4:
-            dog_count += 1
+            deer_count += 1
         elif label == 5:
-            frog_count += 1
+            dog_count += 1
         elif label == 6:
-            ship_count += 1
+            frog_count += 1
         elif label == 7:
+            horse_count += 1
+        elif label == 8:
+            ship_count += 1
+        elif label == 9:
             truck_count += 1
         
     print(f'Number of samples of the class airplane: {airplane_count}')
     print(f'Number of samples of the class automobile: {automobile_count}')
     print(f'Number of samples of the class bird: {bird_count}')
     print(f'Number of samples of the class cat: {cat_count}')
+    print(f'Number of samples of the class deer: {deer_count}')
     print(f'Number of samples of the class dog: {dog_count}')
     print(f'Number of samples of the class frog: {frog_count}')
+    print(f'Number of samples of the class horse: {horse_count}')
     print(f'Number of samples of the class ship: {ship_count}')
     print(f'Number of samples of the class truck: {truck_count}\n')
     
-    n_class_1 = 8
+    n_class_1 = 10
     n_class_2 = 2
     y_train_1 = to_categorical(y_train_1, n_class_1)
     y_test_1 = to_categorical(y_test_1, n_class_1)

@@ -16,8 +16,8 @@ stages:
       md5: 9b3e65b0ad1ac15fb7f22de532dc4d92
       size: 2000128
     - path: model1.py
-      md5: 72fda33d0f45402409bafdfd0d82e30c
-      size: 4461
+      md5: 94b65e543623507a517b618665c4f16a
+      size: 4470
     outs:
     - path: ../models/model1.h5
       md5: d4bb9383bf904e413ab0449aeb358264
@@ -94,8 +94,8 @@ stages:
       md5: bcff07d043008046e5105661980cb458
       size: 400128
     - path: model2.py
-      md5: 5315f3e3db956a2c9b61e3c25ab80719
-      size: 4378
+      md5: a570f905857854280a546aabd58c8d41
+      size: 4391
     outs:
     - path: ../models/model2.h5
       md5: 38c6273fba67cbe5deff8d88c0c6cd71

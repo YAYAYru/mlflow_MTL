@@ -1,5 +1,5 @@
-# paper_mlflow
-Multi-task learning using MLflow
+# mlflow_MTL
+Multitask learning with independent models using MLflow
 ## Quick start on the following sequential items.
 - Tested in Ubuntu 20.08
 - Init

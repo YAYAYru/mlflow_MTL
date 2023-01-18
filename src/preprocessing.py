@@ -25,37 +25,16 @@ PATH_NPY_Y_TEST_1 = PATH_FOLDER + "y_test_1.npy"
 PATH_NPY_Y_TRAIN_2 = PATH_FOLDER + "y_train_2.npy"
 PATH_NPY_Y_TEST_2 = PATH_FOLDER + "y_test_2.npy"
 
-def erase_classes(classes_to_drop, x_train, x_test, y_train, y_test):
+
+def generate_binary_labels(yy, animal_classes):
     """
-    :param classes_to_drop: list with the labels of the classes to be erased
-    :return: datasets tuple without the classes: (
-    """
-    new_x_train, new_x_test, new_y_train,  new_y_test = list(), list(), list(), list()
-    for train_sample, label in zip(x_train, y_train):
-        if label not in classes_to_drop:
-            new_x_train.append(train_sample)
-            new_y_train.append(label)
-
-    for test_sample, test_label in zip(x_test, y_test):
-        if test_label not in classes_to_drop:
-            new_x_test.append(test_sample)
-            new_y_test.append(test_label)
-
-    return np.array(new_x_train), np.array(new_x_test), np.array(new_y_train), np.array(new_y_test)
-
-
-def generate_binary_labels(y_train, y_test, animal_classes):
-    """
-    :param y_train: training labels
-    :param y_test: testing labels
+    :param yy: labels
     :param animal_classes: list of the labels which correspond to an animal
     :return: training and testing labels for binary classification, where
     animals' label is 0 and vehicle's label is 1
     """
-    y_train_2 = [0 if y in animal_classes else 1 for y in y_train]
-    y_test_2 = [0 if y in animal_classes else 1 for y in y_test]
-
-    return y_train_2, y_test_2
+    yy_2 = [0 if y in animal_classes else 1 for y in yy]
+    return yy_2
 
 
 def preprocess_data_cifar10(x_train, y_train_1, x_test, y_test_1):
@@ -63,7 +42,8 @@ def preprocess_data_cifar10(x_train, y_train_1, x_test, y_test_1):
     airplane_count, automobile_count, bird_count, cat_count, deer_count, dog_count, frog_count, horse_count, ship_count, truck_count = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     
     # 0 = animal, 1 = vehicle
-    y_train_2, y_test_2 = generate_binary_labels(y_train_1, y_test_1, [2, 3, 4, 5, 6, 7])    
+    y_train_2 = generate_binary_labels(y_train_1, [2, 3, 4, 5, 6, 7])    
+    y_test_2 = generate_binary_labels(y_test_1, [2, 3, 4, 5, 6, 7])    
     
     # Print amount of instances of each class
     for label in y_train_1:

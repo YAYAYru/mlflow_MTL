@@ -83,7 +83,7 @@ with mlflow.start_run() as run:
 
     start = time.time()
     model2_history = model.fit(x_train, y_train,
-                        epochs=15, batch_size=128, verbose=0)
+                        epochs=50, batch_size=128, verbose=0)
 
     print(f'Training time: {time.time() - start}\n')
 
@@ -103,7 +103,7 @@ with mlflow.start_run() as run:
     # print("Name: {}".format(mv.name))
     # print("Version: {}".format(mv.version))
 
-# mlflow models serve --no-conda -m file:///home/yayay/yayay/git/github/paper_mlflow/src/mlruns/137049049665508372/b75e8ca4891d41e486e041fc996829e9/artifacts/model -h 0.0.0.0 -p 8002
+# mlflow models serve --no-conda -m file:///home/yayay/yayay/git/github/paper_mlflow/src/mlruns/902157297686484746/9073369db93241b49ca354fdb0275b98/artifacts/model -h 0.0.0.0 -p 8002
 
 # export CUDA_VISIBLE_DEVICES='' Выключить GPU для предикта
 # export CUDA_VISIBLE_DEVICES='0' Включить GPU для обучения

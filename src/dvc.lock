@@ -16,11 +16,11 @@ stages:
       md5: 9b3e65b0ad1ac15fb7f22de532dc4d92
       size: 2000128
     - path: model1.py
-      md5: 94b65e543623507a517b618665c4f16a
-      size: 4470
+      md5: 0487bfb25178f1fd6bc9cb265a2f512a
+      size: 4350
     outs:
     - path: ../models/model1.h5
-      md5: d4bb9383bf904e413ab0449aeb358264
+      md5: 5beba0a53fdae18fa7de352a09e18bcc
       size: 139004248
   load_data:
     cmd: python3 load_data.py
@@ -94,20 +94,20 @@ stages:
       md5: bcff07d043008046e5105661980cb458
       size: 400128
     - path: model2.py
-      md5: a570f905857854280a546aabd58c8d41
-      size: 4391
+      md5: be9f054e1c2091290a01aaade440fcf4
+      size: 4271
     outs:
     - path: ../models/model2.h5
-      md5: 38c6273fba67cbe5deff8d88c0c6cd71
+      md5: 2919a2aea454cd40d5627c776ab46b9d
       size: 111017424
   main_evaluate:
     cmd: python3 main_evaluate.py
     deps:
     - path: ../models/model1.h5
-      md5: d4bb9383bf904e413ab0449aeb358264
+      md5: 5beba0a53fdae18fa7de352a09e18bcc
       size: 139004248
     - path: ../models/model2.h5
-      md5: 38c6273fba67cbe5deff8d88c0c6cd71
+      md5: 2919a2aea454cd40d5627c776ab46b9d
       size: 111017424
     - path: main_evaluate.py
       md5: f6d2a55f03d7bf57050fcf25646a2da1

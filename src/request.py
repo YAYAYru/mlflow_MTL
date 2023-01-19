@@ -14,10 +14,12 @@ def generate_binary_labels(yy, animal_classes):
 PATH_FOLDER = "../data/processed/"
 
 PATH_NPY_X_TEST = PATH_FOLDER + "x_test.npy"
-PATH_NPY_Y_TEST = PATH_FOLDER + "y_test.npy"
+PATH_NPY_Y_TEST = PATH_FOLDER + "y_test_1.npy"
 
 x_test = np.load(PATH_NPY_X_TEST)
 y_test_1 = np.load(PATH_NPY_Y_TEST)
+
+y_test_1 = np.array([[np.argmax(y)] for y in y_test_1])
 
 animal_classes = [2, 3, 4, 5, 6, 7]
 y_test_2 = generate_binary_labels(y_test_1, animal_classes)

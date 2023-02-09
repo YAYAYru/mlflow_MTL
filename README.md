@@ -1,5 +1,5 @@
 # mlflow_MTL
-Multitask learning with independent models using MLflow. [Habr](https://habr.com/ru/post/712904/)
+Find the article on how to use Multitask learning with independent models using MLflow [Here](https://habr.com/ru/post/712904/) in Russian
 ## Quick start on the following sequential items.
 - Tested in Ubuntu 20.08
 - Init
